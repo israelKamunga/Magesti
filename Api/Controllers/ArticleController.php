@@ -28,8 +28,8 @@ class ArticleController{
 
     public function SupprimerArticle($id){
         try{
-            $stmt = $this->conn->prepare("DELETE FROM article WHERE id=:id");
-            $stmt->binParam(':id',$id, PDO::PARAM_INT);
+            $stmt = $this->conn->prepare("DELETE FROM article WHERE idArticle=:id");
+            $stmt->bindParam(':id',$id, PDO::PARAM_INT);
     
             if( $stmt->execute() ){
                 return true;
@@ -41,13 +41,23 @@ class ArticleController{
         }
     }
 
-    public function ModifierArticle($id,$artcle){
+    public function ModifierArticle($id,$article){
 
         try{
-            $stmt = $this->conn->prepare('UPDATE article SET CodeArticle=:CodeArticle, Designation=:Designation, PrixUnitaire=:PrixUnitaire, Quantite=:Quantite, Categorie=:Categorie');
+            $stmt = $this->conn->prepare('UPDATE article SET CodeArticle=:CodeArticle, Designation=:Designation, PrixUnitaire=:PrixUnitaire, Quantite=:Quantite, Categorie=:Categorie WHERE IdArticle=:id');
+            $stmt->bindParam(':CodeArticle',$article->getCode(),PDO::PARAM_STR);
+            $stmt->bindParam(':Designation',$article->getDesignation(),PDO::PARAM_STR);
+            $stmt->bindParam(':PrixUnitaire',$article->getPrixUnitaire());
+            $stmt->bindParam(':Quantite',$article->getQuantiteEnStock(),PDO::PARAM_INT);
+            $stmt->bindParam(':Categorie',$article->getCategorie(),PDO::PARAM_STR);
+            $stmt->bindParam(':id',$id,PDO::PARAM_INT);
+            if($stmt->execute()){
+                return true;
+            }else{
+                return false;
+            }
         }catch(PDOException $e){
             echo ''.$e->getMessage();
         }
-        return true;
     }
 }

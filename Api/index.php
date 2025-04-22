@@ -5,7 +5,13 @@ require_once 'Entities/Database.php';
 require_once 'Controllers/ArticleController.php';
 
 $db = Database::getInstance()->getConnection();
-$art = new Article("BISCUIT49","BISCUIT COOKIES","Biscuit cookies faits à base de lait",2.3,10,"Nourriture");
+$art = new Article(
+    "Yahourt",
+    "Yahourt fait à base de lait",
+    "Biscuit cookies faits à base de lait",
+    23,
+    10,
+    "Nourriture");
 $articleController = new ArticleController($db);
 
 
@@ -16,8 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } else {
         $articleController->getArticles();
     }*/
-    if($articleController->AjouterArticle($art)==false){
-        echo json_encode(["message" => "L'insertion a échouée"]);
+    if($articleController->ModifierArticle(2,$art)) {
+        echo json_encode(["message" => "La modification a reussie"]);
     }else{
         
         echo json_encode(["message" => "SUCCESS"]);
