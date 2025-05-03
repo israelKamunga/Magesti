@@ -18,26 +18,17 @@ $articleController = new ArticleController($db);
 
 // Routeur très simple
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    /*if (isset($_GET['id'])) {
-        $articleController->getArticle($_GET['id']);
-    } else {
-        $articleController->getArticles();
-    }
-    if($articleController->ModifierArticle(2,$art)) {
-        echo json_encode(["message" => "La modification a reussie"]);
-    }else{
-        
-        echo json_encode(["message" => "SUCCESS"]);
-    }
-    */
     if($_GET["operation"]=="connexion") {
-        //if(UserController::connexion($_GET('UserName'),$_GET('Password'),$db)!=null){
-        //}
-        echo json_encode(UserController::connexion($_GET['UserName'],$_GET['Password'],$db));
+        $result = UserController::connexion($_GET['UserName'],$_GET['Password'],$db);
+        if($result!=null){
+            http_response_code(200);
+            echo json_encode(["UserName"=>$result["UserName"]]);
+        }else{
+            http_response_code(401);
+            echo json_encode(["erreur"=>["utilisateur invalide"]]);
+        }
     }
-
-
 } else {
-    http_response_code(405); // Méthode non autorisée
+     // Méthode non autorisée
     echo json_encode(["message" => "Méthode non autorisée"]);
 }
