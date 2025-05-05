@@ -8,23 +8,21 @@ class Article
     private $designation;
     private $description;
     private $prixUnitaire;
+    private $prixVente;
     private $quantiteEnStock;
     private $categorie;
-    private $dateAjout;
-    private $statut;
 
     // Constructeur
-    public function __construct($code, $designation, $description, $prixUnitaire, $quantiteEnStock, $categorie)
+    public function __construct($code, $designation, $description, $prixUnitaire, $prixVente,$quantiteEnStock, $categorie)
     {
         //$this->id = $id;
         $this->code = $code;
         $this->designation = $designation;
         $this->description = $description;
         $this->prixUnitaire = $prixUnitaire;
+        $this->prixVente = $prixVente;
         $this->quantiteEnStock = $quantiteEnStock;
         $this->categorie = $categorie;
-        /*$this->dateAjout = $dateAjout;
-        $this->statut = $statut;*/
     }
 
     // Getters et Setters
@@ -67,6 +65,14 @@ class Article
 
     public function setPrixUnitaire($prixUnitaire) {
         $this->prixUnitaire = $prixUnitaire;
+    }
+
+    public function getPrixVente():mixed{
+        return $this->prixVente;
+    }
+
+    public function setPrixVente($prixVente) {
+        $this->prixVente = $prixVente;
     }
 
     public function getQuantiteEnStock() {

@@ -10,10 +10,13 @@ $art = new Article(
     "Yahourt",
     "Yahourt fait à base de lait",
     "Biscuit cookies faits à base de lait",
-    23,
-    10,
-    "Nourriture");
+    2,
+    3,
+    3,
+    "Nourriture"
+);
 $articleController = new ArticleController($db);
+$articleController->AjouterArticle($art);
 
 
 // Routeur très simple
