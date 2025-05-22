@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+require_once("../config/Database.php");
+require_once("../Controllers/ArticleController.php");
+
+$ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
 ?>
 
 <!DOCTYPE html>
@@ -18,7 +22,11 @@ session_start();
       font-family: 'Segoe UI', sans-serif;
     }
 
-    body {
+    body{
+      box-sizing: border-box;
+    }
+
+    .maincontent {
       display: flex;
       height: 100vh;
       background-color: #f9fbfd;
@@ -200,9 +208,135 @@ session_start();
       color: #e54545;
       border-color: #f5bcbc;
     }
+
+    a{
+      text-decoration: none;
+    }
+
+    /* creation article formulaire */
+    .creationarticlecontaineur{
+      display: none;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100vh;
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 10000;
+    }
+    .creationarticlecontent {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      width: 500px;
+      height: 500px;
+      padding: 30px;
+      flex: 1;
+
+    }
+
+    .creationarticlecontent h1 {
+      font-size: 26px;
+      margin-bottom: 20px;
+      color: #1f3b64;
+    }
+
+    .creationarticlecontent form {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      max-width: 600px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .creationarticlecontent label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #1f3b64;
+    }
+
+    .creationarticlecontent input, select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #d0d7e2;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .creationarticlecontent button {
+      background-color: #3a7afe;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .creationarticlecontent button:hover {
+      background-color: #2e66d6;
+    }
   </style>
 </head>
 <body>
+  <!---formulaire de creation d'un article--->
+
+  <div class="creationarticlecontaineur">
+  <div class="creationarticlecontent">
+    <h1>Créer un article</h1>
+      <form>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="code">Code</label>
+            <input type="text" id="code" name="code" required>
+          </div>
+          <div class="form-group">
+            <label for="designation">Désignation</label>
+            <input type="text" id="designation" name="designation" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="description">Description</label>
+            <input type="text" id="description" name="description">
+          </div>
+          <div class="form-group">
+            <label for="categorie">Catégorie</label>
+            <input type="text" id="categorie" name="categorie">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="prixU">Prix unitaire (€)</label>
+            <input type="number" id="prixU" name="prixU" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label for="prixV">Prix de vente (€)</label>
+            <input type="number" id="prixV" name="prixV" step="0.01">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="quantite">Quantité</label>
+            <input type="number" id="quantite" name="quantite" required>
+          </div>
+        </div>
+        <button type="submit">Créer l'article</button>
+      </form>
+    </div>
+  </div>
+  </div> 
+
+<!---Contenu principal--->
+  <div class="maincontent">
   <div class="sidebar">
     <div class="logo"><i class="fas fa-cube"></i> Magesti</div>
     <div class="menu">
@@ -227,19 +361,47 @@ session_start();
         <button><i class="fas fa-list"></i> Lister les codes à récupérer</button>
         <button><i class="fas fa-tag"></i> Imprimer des étiquettes</button>
         <button><i class="fas fa-copy"></i> Dupliquer un article</button>
+        <a href="CreerArticle.php"><button><i class="fas fa-add"></i> Créer un article</button></a>
       </div>
       <table>
         <thead>
           <tr>
+            <th>Code Article</th>
             <th>Designation</th>
-            <th>Description</th>
             <th>Categorie</th>
-            <th>Prix unitaire</th>
-            <th>Prix de vente</th>
-            <th>Quantité</th>
+            <th>Présentation</th>
+            <th>Prix Revient</th>
+            <th>Prix Vente</th>
+            <th>Stock Minimum</th>
+            <th>Quantite</th>
           </tr>
         </thead>
         <tbody>
+          <?php
+          $articles = $ArticleCtrl->ObtenirArticles();
+          //print_r($articles);
+          //$cles_voulues = ["IdArticle", "CodeArticle", "Designation", "PrixUnitaire", "Quantite", "Categorie"];
+          if($articles!=null){
+            foreach ($articles as $article) {
+              ?>
+              <tr>
+                <td><?php echo $article["CodeArticle"] ?></td>
+                <td><?php echo $article["Designation"] ?></td>
+                <td><?php echo $article["Categorie"] ?></td>
+                <td><?php echo $article["presentation"] ?></td>
+                <td><?php echo $article["PrixRevient"] ?></td>
+                <td><?php echo $article["PrixVente"] ?></td>
+                <td><?php echo $article["StockMinimum"] ?></td>
+                <td><?php echo $article["Quantite"] ?></td>
+                <td><button class="btn-action btn-edit">Modifier</button><a class="btn-action btn-delete" href="../Controllers/ArticleController.php?action=supprimer&id=<?php echo $article["IdArticle"]; ?>">Supprimer</a>
+              </tr>
+              <?php
+              }
+              
+          }
+          ?>
+          
+          
           <tr>
             <td>Ordinateur portable</td>
             <td>HP G450 processeur 2.0GHZ</td>
@@ -298,5 +460,7 @@ session_start();
       </table>
     </div>
   </div>
+  </div>
+
 </body>
 </html>
