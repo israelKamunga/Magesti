@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+If(!isset($_SESSION["username"])){
+  header("Location: ../index.php");
+}
+
 require_once("../config/Database.php");
 require_once("../Controllers/ArticleController.php");
 
@@ -14,6 +18,7 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Magesti - Gestion des Articles</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="../assets/js/index.js" defer></script>
   <style>
     * {
       margin: 0;
@@ -24,6 +29,7 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
 
     body{
       box-sizing: border-box;
+      width: 100%;
     }
 
     .maincontent {
@@ -284,56 +290,149 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
     .creationarticlecontent button:hover {
       background-color: #2e66d6;
     }
+
+
+    /**--------------------------------------- */
+    .wrapper {
+      display: none;
+      position: absolute;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100vh;
+      z-index: 1000;
+      background-color: rgba(0,0,0,0.6);
+    }
+
+    .form-container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 700px;
+    }
+
+    .form-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #1f3c88;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 15px;
+    }
+
+    .form-group {
+      flex: 1;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .form-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .btn-ajouter {
+      background-color: #3b82f6;
+      color: white;
+    }
+
+    .btn-annuler {
+      background-color: #e5e7eb;
+      color: #374151;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+  </style>
   </style>
 </head>
 <body>
   <!---formulaire de creation d'un article--->
-
-  <div class="creationarticlecontaineur">
-  <div class="creationarticlecontent">
-    <h1>Créer un article</h1>
-      <form>
+  <div class="wrapper" id="createArticlePopup">
+    <div class="form-container">
+      <h2>Créer un article</h2>
+      <form method="post" action="../Controllers/Articles/Ajouter.php">
         <div class="form-row">
           <div class="form-group">
-            <label for="code">Code</label>
-            <input type="text" id="code" name="code" required>
+            <label for="code">Code Article</label>
+            <input type="text" id="code" name="CodeArticle" required>
           </div>
           <div class="form-group">
             <label for="designation">Désignation</label>
-            <input type="text" id="designation" name="designation" required>
+            <input type="text" id="designation" name="Designation" required>
           </div>
         </div>
+
         <div class="form-row">
           <div class="form-group">
-            <label for="description">Description</label>
-            <input type="text" id="description" name="description">
+            <label for="presentation">Présentation</label>
+            <input type="text" id="presentation" name="Presentation" required>
           </div>
           <div class="form-group">
             <label for="categorie">Catégorie</label>
-            <input type="text" id="categorie" name="categorie">
+            <input type="text" id="categorie" name="Categorie" required>
           </div>
         </div>
+
         <div class="form-row">
           <div class="form-group">
-            <label for="prixU">Prix unitaire (€)</label>
-            <input type="number" id="prixU" name="prixU" step="0.01" required>
+            <label for="prixRevient">Prix Revient</label>
+            <input type="number" id="prixRevient" name="PrixRevient" step="0.01" required>
           </div>
           <div class="form-group">
-            <label for="prixV">Prix de vente (€)</label>
-            <input type="number" id="prixV" name="prixV" step="0.01">
+            <label for="prixVente">Prix Vente</label>
+            <input type="number" id="prixVente" name="PrixVente" step="0.01" required>
           </div>
         </div>
+
         <div class="form-row">
+          <div class="form-group">
+            <label for="stockMin">Stock Minimum</label>
+            <input type="number" id="StockMinimum" name="StockMinimum" required>
+          </div>
           <div class="form-group">
             <label for="quantite">Quantité</label>
-            <input type="number" id="quantite" name="quantite" required>
+            <input type="number" id="Quantite" name="Quantite" required>
           </div>
         </div>
-        <button type="submit">Créer l'article</button>
+
+        <div class="form-buttons">
+          <button type="button" class="btn btn-annuler" id="FermerPopupCreationArticle">Annuler</button>
+          <button type="submit" class="btn btn-ajouter">Ajouter</button>
+        </div>
       </form>
     </div>
   </div>
-  </div> 
 
 <!---Contenu principal--->
   <div class="maincontent">
@@ -361,7 +460,7 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
         <button><i class="fas fa-list"></i> Lister les codes à récupérer</button>
         <button><i class="fas fa-tag"></i> Imprimer des étiquettes</button>
         <button><i class="fas fa-copy"></i> Dupliquer un article</button>
-        <a href="CreerArticle.php"><button><i class="fas fa-add"></i> Créer un article</button></a>
+        <button id="ouvrirFormBtn"><i class="fas fa-add"></i> Créer un article</button>
       </div>
       <table>
         <thead>
@@ -389,8 +488,8 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
                 <td><?php echo $article["Designation"] ?></td>
                 <td><?php echo $article["Categorie"] ?></td>
                 <td><?php echo $article["presentation"] ?></td>
-                <td><?php echo $article["PrixRevient"] ?></td>
-                <td><?php echo $article["PrixVente"] ?></td>
+                <td><?php echo $article["PrixRevient"]." $" ?></td>
+                <td><?php echo $article["PrixVente"]." $" ?></td>
                 <td><?php echo $article["StockMinimum"] ?></td>
                 <td><?php echo $article["Quantite"] ?></td>
                 <td><button class="btn-action btn-edit">Modifier</button><a class="btn-action btn-delete" href="../Controllers/ArticleController.php?action=supprimer&id=<?php echo $article["IdArticle"]; ?>">Supprimer</a>
@@ -461,6 +560,5 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
     </div>
   </div>
   </div>
-
 </body>
 </html>

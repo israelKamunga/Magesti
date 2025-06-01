@@ -1,32 +1,25 @@
 <?php
 
-require_once '../Model/Article.php';
-require_once '../config/Database.php';
+require_once __DIR__."/../Model/Article.php";
+require_once __DIR__."/../config/Database.php";
+//require_once(__DIR__ . '../Model/Article.php');
+//require_once(__DIR__ . '/../config/Database.php');
 
-
-/*if(isset($_GET["action"]) && isset($_GET["id"])){
+if(isset($_GET["action"]) && isset($_GET["id"])){
     if(isset($articleController)){
-        switch($_GET["action"]){
-            case "supprimer":
-                //$articleController->SupprimerArticle($_GET["id"]);
-                header("Location : ../Views/GestionArticles.php");
-                break;
-            default:
-                break;
+        if($_GET["action"]=="supprimer"){
+            $articleController->SupprimerArticle($_GET["id"]);
+            header("Location: ../Views/GestionArticles.php");
         }
     }else{
         $articleController = new ArticleController(Database::getInstance()->getConnection());
-        switch($_GET["action"]){
-            case "supprimer":
-                //$articleController->SupprimerArticle($_GET["id"]);
-                header("Location : ../Views/GestionArticles.php");
-                break;
-            default:
-                break;
+        if($_GET["action"]=="supprimer"){
+            $articleController->SupprimerArticle($_GET["id"]);
+            header("Location: ../Views/GestionArticles.php");
         }
     }
 }
-    */
+
 
 class ArticleController{
 
@@ -39,8 +32,8 @@ class ArticleController{
     public function AjouterArticle($article){
 
         try{
-            $stmt = $this->conn->prepare("INSERT INTO Articles(CodeArticle,Designation,PrixUnitaire,Quantite,Categorie) Values(?,?,?,?,?)");
-            $result = $stmt->execute([$article->getCode(),$article->getDesignation(),$article->getPrixUnitaire(),$article->getQuantiteEnStock(),$article->getCategorie()]);
+            $stmt = $this->conn->prepare("INSERT INTO Articles(CodeArticle,Designation,Presentation,Categorie,prixrevient,prixvente,stockminimum,quantite) Values(?,?,?,?,?,?,?,?)");
+            $result = $stmt->execute([$article->getCode(),$article->getDesignation(),$article->getPresentation(),$article->getCategorie(),$article->getPrixRevient(),$article->getPrixVente(),$article->getstockMinimum(),$article->getQuantite()]);
     
             if($result){
                 return true;
@@ -58,8 +51,8 @@ class ArticleController{
             $stmt->bindParam(':id',$id, PDO::PARAM_INT);
     
             if( $stmt->execute() ){
+                //header("Location : ../Views/GestionArticles.php");
                 return true;
-                header("Location : ../Views/GestionArticles.php");
             }else{
                 return false;
             }

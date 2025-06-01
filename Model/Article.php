@@ -6,23 +6,26 @@ class Article
     private $id;
     private $code;
     private $designation;
-    private $description;
-    private $prixUnitaire;
-    private $prixVente;
-    private $quantiteEnStock;
+    private $presentation;
     private $categorie;
+    private $prixRevient;
+    private $prixVente;
+    private $stockMinimum;
+    private $quantite;
+    
 
     // Constructeur
-    public function __construct($code, $designation, $description, $prixUnitaire, $prixVente,$quantiteEnStock, $categorie)
+    public function __construct($code, $designation, $presentation, $categorie, $prixRevient, $prixVente,$stockMinimum, $quantite)
     {
         //$this->id = $id;
         $this->code = $code;
         $this->designation = $designation;
-        $this->description = $description;
-        $this->prixUnitaire = $prixUnitaire;
-        $this->prixVente = $prixVente;
-        $this->quantiteEnStock = $quantiteEnStock;
+        $this->presentation = $presentation;
         $this->categorie = $categorie;
+        $this->prixRevient = $prixRevient;
+        $this->prixVente = $prixVente;
+        $this->stockMinimum = $stockMinimum;
+        $this->quantite = $quantite;
     }
 
     // Getters et Setters
@@ -51,23 +54,23 @@ class Article
         $this->designation = $designation;
     }
 
-    public function getDescription() {
-        return $this->description;
+    public function getPresentation() {
+        return $this->presentation;
     }
 
-    public function setDescription($description) {
-        $this->description = $description;
+    public function setPresentation($presentation) {
+        $this->presentation = $presentation;
     }
 
-    public function getPrixUnitaire() {
-        return $this->prixUnitaire;
+    public function getPrixRevient(): float {
+        return $this->prixVente;
     }
 
-    public function setPrixUnitaire($prixUnitaire) {
+    public function setPrixRevient($prixUnitaire): void {
         $this->prixUnitaire = $prixUnitaire;
     }
 
-    public function getPrixVente():mixed{
+    public function getPrixVente():float{
         return $this->prixVente;
     }
 
@@ -75,12 +78,12 @@ class Article
         $this->prixVente = $prixVente;
     }
 
-    public function getQuantiteEnStock() {
-        return $this->quantiteEnStock;
+    public function getstockMinimum() {
+        return $this->stockMinimum;
     }
 
-    public function setQuantiteEnStock($quantiteEnStock) {
-        $this->quantiteEnStock = $quantiteEnStock;
+    public function setstockMinimum($stockMinimum) {
+        $this->stockMinimum = $stockMinimum;
     }
 
     public function getCategorie() {
@@ -91,19 +94,11 @@ class Article
         $this->categorie = $categorie;
     }
 
-    public function getDateAjout() {
-        return $this->dateAjout;
+    public function getQuantite(){
+        return $this->quantite;
     }
 
-    public function setDateAjout($dateAjout) {
-        $this->dateAjout = $dateAjout;
-    }
-
-    public function getStatut() {
-        return $this->statut;
-    }
-
-    public function setStatut($statut) {
-        $this->statut = $statut;
+    public function setQuantite($quantite){
+        $this->quantite = $quantite;
     }
 }
