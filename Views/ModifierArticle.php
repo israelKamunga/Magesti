@@ -9,6 +9,7 @@ require_once("../config/Database.php");
 require_once("../Controllers/ArticleController.php");
 
 $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
+$article = $ArticleCtrl->ObtenirArticle($_GET["id"]);
 ?>
 
 <!DOCTYPE html>
@@ -294,7 +295,7 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
 
     /**--------------------------------------- */
     .wrapper {
-      display: none;
+      display: flex;
       position: absolute;
       align-items: center;
       justify-content: center;
@@ -380,55 +381,55 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
   <!---formulaire de creation d'un article--->
   <div class="wrapper" id="createArticlePopup">
     <div class="form-container">
-      <h2>Créer un article</h2>
+      <h2>Modifier un article</h2>
       <form method="post" action="../Controllers/Articles/Ajouter.php">
         <div class="form-row">
           <div class="form-group">
             <label for="code">Code Article</label>
-            <input type="text" id="code" name="CodeArticle" required>
+            <input type="text" id="code" name="CodeArticle" value="<?php echo $article["CodeArticle"]; ?>" required>
           </div>
           <div class="form-group">
             <label for="designation">Désignation</label>
-            <input type="text" id="designation" name="Designation" required>
+            <input type="text" id="designation" name="Designation" value="<?php echo $article["Designation"] ?>" required>
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label for="presentation">Présentation</label>
-            <input type="text" id="presentation" name="Presentation" required>
+            <input type="text" id="presentation" name="Presentation" value="<?php echo $article["presentation"] ?>" required>
           </div>
           <div class="form-group">
             <label for="categorie">Catégorie</label>
-            <input type="text" id="categorie" name="Categorie" required>
+            <input type="text" id="categorie" name="Categorie" value="<?php echo $article["Categorie"] ?>" required>
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label for="prixRevient">Prix Revient</label>
-            <input type="number" id="prixRevient" name="PrixRevient" step="0.01" required>
+            <input type="number" id="prixRevient" name="PrixRevient" step="0.01" value="<?php echo $article["PrixRevient"] ?>" required>
           </div>
           <div class="form-group">
             <label for="prixVente">Prix Vente</label>
-            <input type="number" id="prixVente" name="PrixVente" step="0.01" required>
+            <input type="number" id="prixVente" name="PrixVente" step="0.01" value="<?php echo $article["PrixVente"] ?>" required>
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label for="stockMin">Stock Minimum</label>
-            <input type="number" id="StockMinimum" name="StockMinimum" required>
+            <input type="number" id="StockMinimum" name="StockMinimum" value="<?php echo $article["StockMinimum"] ?>" required>
           </div>
           <div class="form-group">
             <label for="quantite">Quantité</label>
-            <input type="number" id="Quantite" name="Quantite" required>
+            <input type="number" id="Quantite" name="Quantite" value="<?php echo $article["Quantite"] ?>" required>
           </div>
         </div>
 
         <div class="form-buttons">
-          <button type="button" class="btn btn-annuler" id="FermerPopupCreationArticle">Annuler</button>
-          <button type="submit" class="btn btn-ajouter">Ajouter</button>
+          <a href="gestionarticles.php" class="btn btn-annuler">Annuler</a>
+          <button type="submit" class="btn btn-ajouter">Modifier</button>
         </div>
       </form>
     </div>
@@ -492,7 +493,7 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
                 <td><?php echo $article["PrixVente"]." $" ?></td>
                 <td><?php echo $article["StockMinimum"] ?></td>
                 <td><?php echo $article["Quantite"] ?></td>
-                <td><a href="modifierarticle.php?id=<?php echo $article["IdArticle"]; ?>" class="btn-action btn-edit">Modifier</a><a class="btn-action btn-delete" href="../Controllers/ArticleController.php?action=supprimer&id=<?php echo $article["IdArticle"]; ?>">Supprimer</a>
+                <td><button class="btn-action btn-edit">Modifier</button><a class="btn-action btn-delete" href="../Controllers/ArticleController.php?action=supprimer&id=<?php echo $article["IdArticle"]; ?>">Supprimer</a>
               </tr>
               <?php
               }

@@ -91,4 +91,16 @@ class ArticleController{
             return null;
         }
     }
+
+        public function ObtenirArticle($id){
+        $stmt = $this->conn->prepare("SELECT * FROM articles WHERE idarticle=:id");
+        $stmt->bindParam(':id',$id,PDO::PARAM_INT);
+        $stmt->execute();
+        $articles = $stmt->fetch(PDO::FETCH_ASSOC);
+        if($articles){
+            return $articles;
+        }else{
+            return null;
+        }
+    }
 }
