@@ -3,21 +3,21 @@ session_start();
 require_once("config/Database.php");
 require_once("Controllers/UserController.php");
 
-if(!isset($db)){
+if (!isset($db)) {
   $db = Database::getInstance()->getConnection();
 }
 
-$errormessage="";
+$errormessage = "";
 
-if(isset($_SESSION["username"])){
+if (isset($_SESSION["username"])) {
   header("Location: Views/gestionarticles.php");
   //exit();
-}else{
-  if(isset($_POST['username']) && isset($_POST['password'])){
-    $result = UserController::connexion($_POST['username'],$_POST['password'],$db);
-    if($result==null){
+} else {
+  if (isset($_POST['username']) && isset($_POST['password'])) {
+    $result = UserController::connexion($_POST['username'], $_POST['password'], $db);
+    if ($result == null) {
       $errormessage = "Nom d'utilisateur ou mot de passe incorrect, veuillez réessayer";
-    }else{
+    } else {
       $_SESSION['username'] = $result['UserName'];
       header("Location: Views/gestionarticles.php");
     }
@@ -27,6 +27,7 @@ if(isset($_SESSION["username"])){
 ?>
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,6 +36,7 @@ if(isset($_SESSION["username"])){
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="assets/css/index.css">
 </head>
+
 <body>
   <div class="login-container">
     <div class="login-header">
@@ -53,4 +55,5 @@ if(isset($_SESSION["username"])){
     </form>
   </div>
 </body>
+
 </html>

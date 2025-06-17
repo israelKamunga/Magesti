@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-If(!isset($_SESSION["username"])){
+if (!isset($_SESSION["username"])) {
   header("Location: ../index.php");
 }
 
@@ -13,6 +13,7 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
 
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,7 +28,7 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
       font-family: 'Segoe UI', sans-serif;
     }
 
-    body{
+    body {
       box-sizing: border-box;
       width: 100%;
     }
@@ -72,7 +73,8 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
       transition: background 0.3s;
     }
 
-    .menu a:hover, .menu a.active {
+    .menu a:hover,
+    .menu a.active {
       background-color: #335296;
     }
 
@@ -176,7 +178,8 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
       overflow: hidden;
     }
 
-    th, td {
+    th,
+    td {
       padding: 14px 18px;
       text-align: left;
     }
@@ -215,12 +218,12 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
       border-color: #f5bcbc;
     }
 
-    a{
+    a {
       text-decoration: none;
     }
 
     /* creation article formulaire */
-    .creationarticlecontaineur{
+    .creationarticlecontaineur {
       display: none;
       justify-content: center;
       align-items: center;
@@ -231,6 +234,7 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
       top: 0;
       z-index: 10000;
     }
+
     .creationarticlecontent {
       display: flex;
       justify-content: center;
@@ -268,7 +272,8 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
       color: #1f3b64;
     }
 
-    .creationarticlecontent input, select {
+    .creationarticlecontent input,
+    select {
       width: 100%;
       padding: 10px 14px;
       border: 1px solid #d0d7e2;
@@ -301,14 +306,14 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
       width: 100%;
       height: 100vh;
       z-index: 1000;
-      background-color: rgba(0,0,0,0.6);
+      background-color: rgba(0, 0, 0, 0.6);
     }
 
     .form-container {
       background-color: white;
       padding: 30px;
       border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       width: 700px;
     }
 
@@ -372,11 +377,31 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
     .btn:hover {
       opacity: 0.9;
     }
-
   </style>
   </style>
 </head>
+
 <body>
+
+  <!---formulaire de duplication d'un article--->
+  <div class="wrapper" id="dupliquerArticlePopup">
+    <div class="form-container">
+      <h2>Créer un article</h2>
+      <form method="post" action="../Controllers/Articles/Ajouter.php">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="code">Code Article</label>
+            <input type="text" id="code" name="CodeArticle" required>
+          </div>
+        </div>
+        <div class="form-buttons">
+          <button type="button" class="btn btn-annuler" id="BtnFermerPopupDupliquerArticle">Annuler</button>
+          <button type="submit" class="btn btn-ajouter">Ajouter</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!---formulaire de creation d'un article--->
   <div class="wrapper" id="createArticlePopup">
     <div class="form-container">
@@ -434,73 +459,91 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
     </div>
   </div>
 
-<!---Contenu principal--->
+  <!---Contenu principal--->
   <div class="maincontent">
-  <div class="sidebar">
-    <div class="logo"><i class="fas fa-cube"></i> Magesti</div>
-    <div class="menu">
-      <a href="#" class="active"><i class="fas fa-table-list"></i> Gestion des articles</a>
-      <a href="#"><i class="fas fa-sliders-h"></i> Modification des quantités</a>
-      <a href="#"><i class="fas fa-clock"></i> Consultation</a>
-      <a href="#"><i class="fas fa-print"></i> Impression</a>
-      <a href="#"><i class="fas fa-wrench"></i> Programme utilitaires</a>
-    </div>
-  </div>
-  <div class="main">
-    <div class="topbar">
+    <div class="sidebar">
       <div class="logo"><i class="fas fa-cube"></i> Magesti</div>
-      <div class="user-icon"><i class="fas fa-user-circle"></i></div>
+      <div class="menu">
+        <a href="#" class="active"><i class="fas fa-table-list"></i> Gestion des articles</a>
+        <a href="#"><i class="fas fa-sliders-h"></i> Modification des quantités</a>
+        <a href="#"><i class="fas fa-clock"></i> Consultation</a>
+        <a href="#"><i class="fas fa-print"></i> Impression</a>
+        <a href="#"><i class="fas fa-wrench"></i> Programme utilitaires</a>
+      </div>
     </div>
-    <div class="content">
-      <h1>Gestion des articles</h1>
-      <div class="search-bar">
-        <input type="text" placeholder="Rechercher un article...">
+    <div class="main">
+      <div class="topbar">
+        <div class="logo"><i class="fas fa-cube"></i> Magesti</div>
+        <a href="../Controllers/User/Deconnecter.php" class="user-icon"><i class="fas fa-user-circle"></i></a>
       </div>
-      <div class="actions">
-        <button><i class="fas fa-list"></i> Lister les codes à récupérer</button>
-        <button><i class="fas fa-tag"></i> Imprimer des étiquettes</button>
-        <button><i class="fas fa-copy"></i> Dupliquer un article</button>
-        <button id="ouvrirFormBtn"><i class="fas fa-add"></i> Créer un article</button>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Code Article</th>
-            <th>Designation</th>
-            <th>Categorie</th>
-            <th>Présentation</th>
-            <th>Prix Revient</th>
-            <th>Prix Vente</th>
-            <th>Stock Minimum</th>
-            <th>Quantite</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php
-          $articles = $ArticleCtrl->ObtenirArticles();
-          //print_r($articles);
-          //$cles_voulues = ["IdArticle", "CodeArticle", "Designation", "PrixUnitaire", "Quantite", "Categorie"];
-          if($articles!=null){
-            foreach ($articles as $article) {
-              ?>
-              <tr>
-                <td><?php echo $article["CodeArticle"] ?></td>
-                <td><?php echo $article["Designation"] ?></td>
-                <td><?php echo $article["Categorie"] ?></td>
-                <td><?php echo $article["presentation"] ?></td>
-                <td><?php echo $article["PrixRevient"]." $" ?></td>
-                <td><?php echo $article["PrixVente"]." $" ?></td>
-                <td><?php echo $article["StockMinimum"] ?></td>
-                <td><?php echo $article["Quantite"] ?></td>
-                <td><a href="modifierarticle.php?id=<?php echo $article["IdArticle"]; ?>" class="btn-action btn-edit">Modifier</a><a class="btn-action btn-delete" href="../Controllers/ArticleController.php?action=supprimer&id=<?php echo $article["IdArticle"]; ?>">Supprimer</a>
-              </tr>
-              <?php
+      <div class="content">
+        <h1>Gestion des articles</h1>
+        <div class="search-bar">
+          <input type="text" placeholder="Rechercher un article...">
+        </div>
+        <div class="actions">
+          <button><i class="fas fa-list"></i> Lister les codes à récupérer</button>
+          <button><i class="fas fa-tag"></i> Imprimer des étiquettes</button>
+          <button id="dupliquerArticleBtn"><i class="fas fa-copy"></i> Dupliquer un article</button>
+          <button id="ouvrirFormBtn"><i class="fas fa-add"></i> Créer un article</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Code Article</th>
+              <th>Designation</th>
+              <th>Categorie</th>
+              <th>Présentation</th>
+              <th>Prix Revient</th>
+              <th>Prix Vente</th>
+              <th>Stock Minimum</th>
+              <th>Quantite</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php
+            $articles = $ArticleCtrl->ObtenirArticles();
+            //print_r($articles);
+            //$cles_voulues = ["IdArticle", "CodeArticle", "Designation", "PrixUnitaire", "Quantite", "Categorie"];
+            if ($articles != null) {
+              foreach ($articles as $article) {
+                ?>
+            <tr>
+              <td>
+                <?php echo $article["CodeArticle"] ?>
+              </td>
+              <td>
+                <?php echo $article["Designation"] ?>
+              </td>
+              <td>
+                <?php echo $article["Categorie"] ?>
+              </td>
+              <td>
+                <?php echo $article["presentation"] ?>
+              </td>
+              <td>
+                <?php echo $article["PrixRevient"] . " $" ?>
+              </td>
+              <td>
+                <?php echo $article["PrixVente"] . " $" ?>
+              </td>
+              <td>
+                <?php echo $article["StockMinimum"] ?>
+              </td>
+              <td>
+                <?php echo $article["Quantite"] ?>
+              </td>
+              <td><a href="modifierarticle.php?id=<?php echo $article["IdArticle"]; ?>"
+                  class="btn-action btn-edit">Modifier</a><a class="btn-action btn-delete"
+                  href="../Controllers/ArticleController.php?action=supprimer&id=<?php echo $article["IdArticle"]; ?>">Supprimer</a>
+            </tr>
+            <?php
               }
-              
-          }
-          ?>
-          
-        <!--- 
+
+            }
+            ?>
+
+            <!--- 
           <tr>
             <td>Ordinateur portable</td>
             <td>HP G450 processeur 2.0GHZ</td>
@@ -557,10 +600,11 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
           </tr>
 
           -->
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
-  </div>
 </body>
+
 </html>
