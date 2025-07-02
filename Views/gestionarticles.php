@@ -393,6 +393,10 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
             <label for="code">Code Article</label>
             <input type="text" id="code" name="CodeArticle" required>
           </div>
+          <div class="form-group">
+            <label for="code">Magasin</label>
+            <input type="text" id="code" name="CodeArticle" required>
+          </div>
         </div>
         <div class="form-buttons">
           <button type="button" class="btn btn-annuler" id="BtnFermerPopupDupliquerArticle">Annuler</button>

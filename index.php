@@ -2,9 +2,15 @@
 session_start();
 require_once("config/Database.php");
 require_once("Controllers/UserController.php");
+require_once("Controllers/MagasinController.php");
+
 
 if (!isset($db)) {
   $db = Database::getInstance()->getConnection();
+}
+
+if (!isset($MagasinCtrl)) {
+  $MagasinCtrl = new MagasinController($db);
 }
 
 $errormessage = "";
@@ -47,7 +53,16 @@ if (isset($_SESSION["username"])) {
     <form method="post" action="">
       <label for="username">Nom d'utilisateur</label>
       <input type="text" id="username" name="username" placeholder="Entrez votre nom" required>
-
+      <label for="password">Magasin</label>
+      <select name="magasin" id="">
+        <option value="">-------Selectionnez le magasin------</option>
+        <?php
+        $Magasins = $MagasinCtrl->getMagasins();
+        foreach ($magasin as $Magasins) {
+          echo '<option value="' . $magasin . '">' . $magasin . '</option>';
+        }
+        ?>
+      </select>
       <label for="password">Mot de passe</label>
       <input type="password" id="password" name="password" placeholder="Entrez votre mot de passe" required>
       <label for="" class="errormessagelabel"><?php echo $errormessage; ?></label>
