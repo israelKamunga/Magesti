@@ -2,11 +2,11 @@
 class MagasinController
 {
 
-    private $db;
+    private $conn;
 
-    public function __construct($db)
+    public function __construct($conn)
     {
-        this->$db = $db;
+        $this->conn = $conn;
     }
 
     public function getMagasins()

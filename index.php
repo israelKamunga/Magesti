@@ -25,6 +25,7 @@ if (isset($_SESSION["username"])) {
       $errormessage = "Nom d'utilisateur ou mot de passe incorrect, veuillez réessayer";
     } else {
       $_SESSION['username'] = $result['UserName'];
+      $_SESSION['magasin'] = $_POST['magasin'];
       header("Location: Views/gestionarticles.php");
     }
   }
@@ -54,12 +55,12 @@ if (isset($_SESSION["username"])) {
       <label for="username">Nom d'utilisateur</label>
       <input type="text" id="username" name="username" placeholder="Entrez votre nom" required>
       <label for="password">Magasin</label>
-      <select name="magasin" id="">
-        <option value="">-------Selectionnez le magasin------</option>
+      <select name="magasin" id="" type="text" required>
+        <option value="" disabled selected hidden>-------Selectionnez le magasin------</option>
         <?php
         $Magasins = $MagasinCtrl->getMagasins();
-        foreach ($magasin as $Magasins) {
-          echo '<option value="' . $magasin . '">' . $magasin . '</option>';
+        foreach ($Magasins as $magasin) {
+          echo '<option value="' . $magasin["nomMagasin"] . '">' . $magasin["nomMagasin"] . '</option>';
         }
         ?>
       </select>

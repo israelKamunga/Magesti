@@ -19,369 +19,33 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Magesti - Gestion des Articles</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/gestionarticles.css">
   <script src="../assets/js/index.js" defer></script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
-    }
 
-    body {
-      box-sizing: border-box;
-      width: 100%;
-    }
-
-    .maincontent {
-      display: flex;
-      height: 100vh;
-      background-color: #f9fbfd;
-    }
-
-    .sidebar {
-      width: 250px;
-      background-color: #1f3b71;
-      color: white;
-      padding: 20px;
-    }
-
-    .sidebar .logo {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 40px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .sidebar .logo i {
-      font-size: 22px;
-      color: #4eaaff;
-    }
-
-    .menu a {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: white;
-      padding: 12px 10px;
-      margin-bottom: 12px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 15px;
-      transition: background 0.3s;
-    }
-
-    .menu a:hover,
-    .menu a.active {
-      background-color: #335296;
-    }
-
-    .menu a i {
-      font-size: 16px;
-    }
-
-    .main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .topbar {
-      height: 60px;
-      background-color: white;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 25px;
-      border-bottom: 1px solid #e1e4e8;
-    }
-
-    .topbar .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 20px;
-      font-weight: bold;
-      color: #1f3b71;
-    }
-
-    .topbar .logo i {
-      color: #4eaaff;
-    }
-
-    .topbar .user-icon i {
-      font-size: 20px;
-      color: #4eaaff;
-      background: #e5f0ff;
-      padding: 10px;
-      border-radius: 50%;
-    }
-
-    .content {
-      padding: 30px;
-      flex: 1;
-      overflow-y: auto;
-    }
-
-    .content h1 {
-      font-size: 26px;
-      margin-bottom: 20px;
-      color: #1f3b71;
-    }
-
-    .search-bar {
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-    }
-
-    .search-bar input {
-      padding: 10px 15px;
-      width: 300px;
-      border: 1px solid #d0d7e2;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-
-    .actions {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 25px;
-    }
-
-    .actions button {
-      background-color: #e5edff;
-      color: #2a4fa2;
-      border: 1px solid #c3d4fa;
-      padding: 10px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 500;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .actions button i {
-      font-size: 14px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background-color: white;
-      border: 1px solid #e3e6eb;
-      border-radius: 12px;
-      overflow: hidden;
-    }
-
-    th,
-    td {
-      padding: 14px 18px;
-      text-align: left;
-    }
-
-    th {
-      background-color: #f7f9fb;
-      color: #445b84;
-      font-size: 14px;
-    }
-
-    td {
-      color: #333;
-      font-size: 14px;
-      border-top: 1px solid #f0f2f5;
-    }
-
-    .btn-action {
-      padding: 6px 10px;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 500;
-      border: 1px solid transparent;
-      cursor: pointer;
-    }
-
-    .btn-edit {
-      background-color: #eef5ff;
-      color: #2062cc;
-      border-color: #b9d6ff;
-      margin-right: 8px;
-    }
-
-    .btn-delete {
-      background-color: #ffeeee;
-      color: #e54545;
-      border-color: #f5bcbc;
-    }
-
-    a {
-      text-decoration: none;
-    }
-
-    /* creation article formulaire */
-    .creationarticlecontaineur {
-      display: none;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      height: 100vh;
-      position: absolute;
-      left: 0;
-      top: 0;
-      z-index: 10000;
-    }
-
-    .creationarticlecontent {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      width: 500px;
-      height: 500px;
-      padding: 30px;
-      flex: 1;
-
-    }
-
-    .creationarticlecontent h1 {
-      font-size: 26px;
-      margin-bottom: 20px;
-      color: #1f3b64;
-    }
-
-    .creationarticlecontent form {
-      background-color: #fff;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-      max-width: 600px;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    .creationarticlecontent label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: #1f3b64;
-    }
-
-    .creationarticlecontent input,
-    select {
-      width: 100%;
-      padding: 10px 14px;
-      border: 1px solid #d0d7e2;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-
-    .creationarticlecontent button {
-      background-color: #3a7afe;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 6px;
-      font-size: 15px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    .creationarticlecontent button:hover {
-      background-color: #2e66d6;
-    }
-
-
-    /**--------------------------------------- */
-    .wrapper {
-      display: none;
-      position: absolute;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100vh;
-      z-index: 1000;
-      background-color: rgba(0, 0, 0, 0.6);
-    }
-
-    .form-container {
-      background-color: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      width: 700px;
-    }
-
-    .form-container h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      color: #1f3c88;
-    }
-
-    .form-row {
-      display: flex;
-      gap: 20px;
-      margin-bottom: 15px;
-    }
-
-    .form-group {
-      flex: 1;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      color: #333;
-      font-weight: 600;
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 8px 12px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-
-    .form-buttons {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .btn {
-      padding: 10px 20px;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    .btn-ajouter {
-      background-color: #3b82f6;
-      color: white;
-    }
-
-    .btn-annuler {
-      background-color: #e5e7eb;
-      color: #374151;
-    }
-
-    .btn:hover {
-      opacity: 0.9;
-    }
   </style>
   </style>
 </head>
 
 <body>
+  <!---Imprimer des etiquettes--->
+  <div class="wrapper" id="ImprimerEtiquettePopup">
+    <div class="form-container">
+      <h2>Créer un article</h2>
+      <form method="post" action="Etiquette.php">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="code">Code Article</label>
+            <input type="text" id="code" name="CodeArticle" required>
+          </div>
+        </div>
+        <div class="form-buttons">
+          <button type="button" class="btn btn-annuler" id="FermerPopupImprimerEtiquette">Annuler</button>
+          <button type="submit" class="btn btn-ajouter">Ajouter</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!---formulaire de duplication d'un article--->
   <div class="wrapper" id="dupliquerArticlePopup">
@@ -487,7 +151,7 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
         </div>
         <div class="actions">
           <button><i class="fas fa-list"></i> Lister les codes à récupérer</button>
-          <button><i class="fas fa-tag"></i> Imprimer des étiquettes</button>
+          <button id="imprimerEtiquetteBtn"><i class="fas fa-tag"></i> Imprimer des étiquettes</button>
           <button id="dupliquerArticleBtn"><i class="fas fa-copy"></i> Dupliquer un article</button>
           <button id="ouvrirFormBtn"><i class="fas fa-add"></i> Créer un article</button>
         </div>
