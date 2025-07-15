@@ -1,12 +1,14 @@
 <?php
 session_start();
 
+require_once("../config/Database.php");
+require_once("../Controllers/ArticleController.php");
+
 If(!isset($_SESSION["username"])){
   header("Location: ../index.php");
 }
 
-require_once("../config/Database.php");
-require_once("../Controllers/ArticleController.php");
+
 
 $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
 $article = $ArticleCtrl->ObtenirArticle($_GET["id"]);
@@ -17,7 +19,7 @@ $article = $ArticleCtrl->ObtenirArticle($_GET["id"]);
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Magesti - Gestion des Articles</title>
+  <title>Gestock - Gestion des Articles</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="../assets/js/index.js" defer></script>
   <style>
@@ -438,7 +440,7 @@ $article = $ArticleCtrl->ObtenirArticle($_GET["id"]);
 <!---Contenu principal--->
   <div class="maincontent">
   <div class="sidebar">
-    <div class="logo"><i class="fas fa-cube"></i> Magesti</div>
+    <div class="logo"><i class="fas fa-cube"></i> Gestock</div>
     <div class="menu">
       <a href="#" class="active"><i class="fas fa-table-list"></i> Gestion des articles</a>
       <a href="#"><i class="fas fa-sliders-h"></i> Modification des quantités</a>
@@ -449,7 +451,7 @@ $article = $ArticleCtrl->ObtenirArticle($_GET["id"]);
   </div>
   <div class="main">
     <div class="topbar">
-      <div class="logo"><i class="fas fa-cube"></i> Magesti</div>
+      <div class="logo"><i class="fas fa-cube"></i> Gestock</div>
       <div class="user-icon"><i class="fas fa-user-circle"></i></div>
     </div>
     <div class="content">

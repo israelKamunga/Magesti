@@ -10,4 +10,5 @@ document.getElementById("btnImprimer").addEventListener("click",ImprimerEtiquett
 
 function ImprimerEtiquette(){
     window.print();
+    window.history.back();
 }

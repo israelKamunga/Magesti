@@ -1,5 +1,19 @@
 <?php
-    
+session_start();
+
+require_once("../config/Database.php");
+require_once("../Controllers/ArticleController.php");
+
+if (!isset($_SESSION["username"])) {
+    header("Location: ../index.php");
+}
+
+$ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
+$article = $ArticleCtrl->ObtenirArticle($_POST["CodeArticle"]);
+
+if($article==null){
+    header("Location: articlenontrouve.php");
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -16,8 +30,8 @@
 
 <body>
     <div class="etiquette-container">
-        <div class="article-nom">T-shirt Coton Bio</div>
-        <div class="article-prix">24,90 €</div>
+        <div class="article-nom"><?php echo $article['Designation'];?></div>
+        <div class="article-prix"><?php echo $article['PrixVente'];?> $</div>
         <div class="code-barres">
             <img src="https://barcode.tec-it.com/barcode.ashx?data=123456789012&code=EAN13&translate-esc=false"
                 alt="Code-barres">
