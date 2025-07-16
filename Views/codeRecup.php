@@ -1,134 +1,190 @@
-<?php
-session_start();
-
-if (!isset($_SESSION["username"])) {
-  header("Location: ../index.php");
-}
-
-require_once("../config/Database.php");
-require_once("../Controllers/ArticleController.php");
-
-$ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
-?>
-
 <!DOCTYPE html>
 <html lang="fr">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestock - Gestion des Articles</title>
+  <title>Popup - Liste des articles</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="../assets/css/gestionarticles.css">
-  <script src="../assets/js/index.js" defer></script>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
 
-  </style>
+    body {
+      width: 100%;
+    }
+
+    .maincontent {
+      display: flex;
+      height: 100vh;
+      background-color: #f9fbfd;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #1f3b71;
+      color: white;
+      padding: 20px;
+    }
+
+    .sidebar .logo {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 40px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sidebar .logo i {
+      font-size: 22px;
+      color: #4eaaff;
+    }
+
+    .menu a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+      padding: 12px 10px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 15px;
+      transition: background 0.3s;
+    }
+
+    .menu a:hover,
+    .menu a.active {
+      background-color: #335296;
+    }
+
+    .menu a i {
+      font-size: 16px;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      height: 60px;
+      background-color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 25px;
+      border-bottom: 1px solid #e1e4e8;
+    }
+
+    .topbar .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #1f3b71;
+    }
+
+    .topbar .logo i {
+      color: #4eaaff;
+    }
+
+    .topbar .user-icon i {
+      font-size: 20px;
+      color: #4eaaff;
+      background: #e5f0ff;
+      padding: 10px;
+      border-radius: 50%;
+    }
+
+    .wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      z-index: 1000;
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+
+    .form-container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 1200px;
+      overflow-y: auto;
+    }
+
+    .form-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #1f3c88;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      border: 1px solid #e3e6eb;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    th,
+    td {
+      padding: 14px 18px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f7f9fb;
+      color: #445b84;
+      font-size: 14px;
+    }
+
+    td {
+      color: #333;
+      font-size: 14px;
+      border-top: 1px solid #f0f2f5;
+    }
+
+    .btn-action {
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid transparent;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn-edit {
+      background-color: #eef5ff;
+      color: #2062cc;
+      border-color: #b9d6ff;
+      margin-right: 8px;
+    }
+
+    .btn-delete {
+      background-color: #ffeeee;
+      color: #e54545;
+      border-color: #f5bcbc;
+    }
   </style>
 </head>
 
 <body>
-  <!---Imprimer des etiquettes--->
-  <div class="wrapper" id="ImprimerEtiquettePopup">
-    <div class="form-container">
-      <h2>Imprimer une etiquette</h2>
-      <form method="post" action="Etiquette.php">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="code">Code Article</label>
-            <input type="text" id="code" name="CodeArticle" required>
-          </div>
-        </div>
-        <div class="form-buttons">
-          <button type="button" class="btn btn-annuler" id="FermerPopupImprimerEtiquette">Annuler</button>
-          <button type="submit" class="btn btn-ajouter">Suivant</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!---formulaire de duplication d'un article--->
-  <div class="wrapper" id="dupliquerArticlePopup">
-    <div class="form-container">
-      <h2>Créer un article</h2>
-      <form method="post" action="../Controllers/Articles/Ajouter.php">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="code">Code Article</label>
-            <input type="text" id="code" name="CodeArticle" required>
-          </div>
-          <div class="form-group">
-            <label for="code">Magasin</label>
-            <input type="text" id="code" name="CodeArticle" required>
-          </div>
-        </div>
-        <div class="form-buttons">
-          <button type="button" class="btn btn-annuler" id="BtnFermerPopupDupliquerArticle">Annuler</button>
-          <button type="submit" class="btn btn-ajouter">Ajouter</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!---formulaire de creation d'un article--->
-  <div class="wrapper" id="createArticlePopup">
-    <div class="form-container">
-      <h2>Créer un article</h2>
-      <form method="post" action="../Controllers/Articles/Ajouter.php">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="code">Code Article</label>
-            <input type="text" id="code" name="CodeArticle" required>
-          </div>
-          <div class="form-group">
-            <label for="designation">Désignation</label>
-            <input type="text" id="designation" name="Designation" required>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="presentation">Présentation</label>
-            <input type="text" id="presentation" name="Presentation" required>
-          </div>
-          <div class="form-group">
-            <label for="categorie">Catégorie</label>
-            <input type="text" id="categorie" name="Categorie" required>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="prixRevient">Prix Revient</label>
-            <input type="number" id="prixRevient" name="PrixRevient" step="0.01" required>
-          </div>
-          <div class="form-group">
-            <label for="prixVente">Prix Vente</label>
-            <input type="number" id="prixVente" name="PrixVente" step="0.01" required>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="stockMin">Stock Minimum</label>
-            <input type="number" id="StockMinimum" name="StockMinimum" required>
-          </div>
-          <div class="form-group">
-            <label for="quantite">Quantité</label>
-            <input type="number" id="Quantite" name="Quantite" required>
-          </div>
-        </div>
-
-        <div class="form-buttons">
-          <button type="button" class="btn btn-annuler" id="FermerPopupCreationArticle">Annuler</button>
-          <button type="submit" class="btn btn-ajouter">Ajouter</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!---Contenu principal--->
   <div class="maincontent">
+    <!-- Sidebar -->
     <div class="sidebar">
       <div class="logo"><i class="fas fa-cube"></i> Gestock</div>
       <div class="menu">
@@ -139,80 +195,66 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
         <a href="#"><i class="fas fa-wrench"></i> Programme utilitaires</a>
       </div>
     </div>
+
+    <!-- Main Content -->
     <div class="main">
+      <!-- Topbar -->
       <div class="topbar">
         <div class="logo"><i class="fas fa-cube"></i> Gestock</div>
         <a href="../Controllers/User/Deconnecter.php" class="user-icon"><i class="fas fa-user-circle"></i></a>
       </div>
-      <div class="content">
-        <h1>Gestion des articles</h1>
-        <div class="search-bar">
-          <input type="text" placeholder="Rechercher un article...">
-        </div>
-        <div class="actions">
-          <button><i class="fas fa-list"></i> Lister les codes à récupérer</button>
-          <button id="imprimerEtiquetteBtn"><i class="fas fa-tag"></i> Imprimer des étiquettes</button>
-          <button id="dupliquerArticleBtn"><i class="fas fa-copy"></i> Dupliquer un article</button>
-          <button id="ouvrirFormBtn"><i class="fas fa-add"></i> Créer un article</button>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Code Article</th>
-              <th>Designation</th>
-              <th>Categorie</th>
-              <th>Présentation</th>
-              <th>Prix Revient</th>
-              <th>Prix Vente</th>
-              <th>Stock Minimum</th>
-              <th>Quantite</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php
-            $articles = $ArticleCtrl->ObtenirArticles();
-            //print_r($articles);
-            //$cles_voulues = ["IdArticle", "CodeArticle", "Designation", "PrixUnitaire", "Quantite", "Categorie"];
-            if ($articles != null) {
-              foreach ($articles as $article) {
-                ?>
-            <tr>
-              <td>
-                <?php echo $article["CodeArticle"] ?>
-              </td>
-              <td>
-                <?php echo $article["Designation"] ?>
-              </td>
-              <td>
-                <?php echo $article["Categorie"] ?>
-              </td>
-              <td>
-                <?php echo $article["presentation"] ?>
-              </td>
-              <td>
-                <?php echo $article["PrixRevient"] . " $" ?>
-              </td>
-              <td>
-                <?php echo $article["PrixVente"] . " $" ?>
-              </td>
-              <td>
-                <?php echo $article["StockMinimum"] ?>
-              </td>
-              <td>
-                <?php echo $article["Quantite"] ?>
-              </td>
-              <td><a href="modifierarticle.php?id=<?php echo $article["IdArticle"]; ?>"
-                  class="btn-action btn-edit">Modifier</a><a class="btn-action btn-delete"
-                  href="../Controllers/ArticleController.php?action=supprimer&id=<?php echo $article["IdArticle"]; ?>">Supprimer</a>
-            </tr>
-            <?php
-              }
 
-            }
-            ?>
-          </tbody>
-        </table>
+      <!-- Popup d'affichage des articles -->
+      <div class="wrapper">
+        <div class="form-container">
+          <h2>Liste des articles</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Code Article</th>
+                <th>Désignation</th>
+                <th>Catégorie</th>
+                <th>Présentation</th>
+                <th>Prix Revient</th>
+                <th>Prix Vente</th>
+                <th>Stock Min</th>
+                <th>Quantité</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php
+              require_once("../config/Database.php");
+              require_once("../Controllers/ArticleController.php");
+              $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
+              $articles = $ArticleCtrl->ObtenirArticles();
+              if ($articles) {
+                foreach ($articles as $article) {
+              ?>
+                <tr>
+                  <td><?= htmlspecialchars($article['CodeArticle']) ?></td>
+                  <td><?= htmlspecialchars($article['Designation']) ?></td>
+                  <td><?= htmlspecialchars($article['Categorie']) ?></td>
+                  <td><?= htmlspecialchars($article['presentation']) ?></td>
+                  <td><?= htmlspecialchars($article['PrixRevient']) ?> $</td>
+                  <td><?= htmlspecialchars($article['PrixVente']) ?> $</td>
+                  <td><?= htmlspecialchars($article['StockMinimum']) ?></td>
+                  <td><?= htmlspecialchars($article['Quantite']) ?></td>
+                  <td>
+                    <a href="modifierarticle.php?id=<?= $article['IdArticle'] ?>" class="btn-action btn-edit">Modifier</a>
+                    <a href="../Controllers/ArticleController.php?action=supprimer&id=<?= $article['IdArticle'] ?>" class="btn-action btn-delete">Supprimer</a>
+                  </td>
+                </tr>
+              <?php }
+              } else {
+              ?>
+                <tr><td colspan="9">Aucun article trouvé.</td></tr>
+              <?php } ?>
+            </tbody>
+          </table>
+        </div>
       </div>
+
     </div>
   </div>
 </body>
