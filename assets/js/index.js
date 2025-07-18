@@ -35,3 +35,18 @@ imprimerEtiquetteBtn.addEventListener("click",()=>{
 FermerPopupImprimerEtiquette.addEventListener("click",()=>{
     imprimerEtiquettePopup.style.display = "none";
 })
+
+
+/* Afficher ou fermer le fomulaire pour lister les codes à récupérer */
+
+const ListerCodeRecupPopup = document.getElementById("ListerCodesRecupPopup");
+const FermerPopupListerCodesRecup = document.getElementById("FermerPopupListerCodesRecup");
+const ListerCodeRecupBtn = document.getElementById("listerCodeRecupBtn");
+
+ListerCodeRecupBtn.addEventListener("click",()=>{
+    ListerCodeRecupPopup.style.display = "flex";
+})
+
+FermerPopupListerCodesRecup.addEventListener("click",()=>{
+    ListerCodeRecupPopup.style.display = "none";
+})

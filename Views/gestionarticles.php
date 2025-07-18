@@ -28,6 +28,30 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
 </head>
 
 <body>
+  <!---Lister codes à récupérer--->
+  <div class="wrapper" id="ListerCodesRecupPopup">
+    <div class="form-container">
+      <h2>Lister les codes à récpérer</h2>
+      <form method="post" action="Etiquette.php">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="code">De</label>
+            <input type="number" id="code" name="CodeArticle" required>
+          </div>
+          <div class="form-group">
+            <label for="code">A</label>
+            <input type="number" id="code" name="CodeArticle" required>
+          </div>
+        </div>
+        <div class="form-buttons">
+          <button type="button" class="btn btn-annuler" id="FermerPopupListerCodesRecup">Annuler</button>
+          <button type="submit" class="btn btn-ajouter">Suivant</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
   <!---Imprimer des etiquettes--->
   <div class="wrapper" id="ImprimerEtiquettePopup">
     <div class="form-container">
@@ -150,7 +174,7 @@ $ArticleCtrl = new ArticleController(Database::getInstance()->getConnection());
           <input type="text" placeholder="Rechercher un article...">
         </div>
         <div class="actions">
-          <button><i class="fas fa-list"></i> Lister les codes à récupérer</button>
+          <button id="listerCodeRecupBtn"><i class="fas fa-list"></i> Lister les codes à récupérer</button>
           <button id="imprimerEtiquetteBtn"><i class="fas fa-tag"></i> Imprimer des étiquettes</button>
           <button id="dupliquerArticleBtn"><i class="fas fa-copy"></i> Dupliquer un article</button>
           <button id="ouvrirFormBtn"><i class="fas fa-add"></i> Créer un article</button>
